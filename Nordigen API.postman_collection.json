@@ -1,0 +1,370 @@
+{
+	"info": {
+		"_postman_id": "23f98682-1660-4751-a0f2-f3209157cbab",
+		"name": "Nordigen API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26351927"
+	},
+	"item": [
+		{
+			"name": "Get Access Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.collectionVariables.set(\"access_token\", jsonData.access);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"secret_id\":\"Get it here https://ob.nordigen.com/user-secrets/\", \"secret_key\":\"Get it here https://ob.nordigen.com/user-secrets/\"}"
+				},
+				"url": {
+					"raw": "https://ob.nordigen.com/api/v2/token/new/",
+					"protocol": "https",
+					"host": [
+						"ob",
+						"nordigen",
+						"com"
+					],
+					"path": [
+						"api",
+						"v2",
+						"token",
+						"new",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Choose a Bank",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"url": {
+					"raw": "https://ob.nordigen.com/api/v2/institutions/?country=lv",
+					"protocol": "https",
+					"host": [
+						"ob",
+						"nordigen",
+						"com"
+					],
+					"path": [
+						"api",
+						"v2",
+						"institutions",
+						""
+					],
+					"query": [
+						{
+							"key": "country",
+							"value": "lv"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create an end user agreement",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.collectionVariables.set(\"eua_id\", '\"' + jsonData.id + '\"');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"institution_id\": {{institution_id}},\n       \"max_historical_days\": \"730\",\n       \"access_valid_for_days\": \"30\",\n       \"access_scope\": [\"balances\", \"details\", \"transactions\"] }"
+				},
+				"url": {
+					"raw": "https://ob.nordigen.com/api/v2/agreements/enduser/",
+					"protocol": "https",
+					"host": [
+						"ob",
+						"nordigen",
+						"com"
+					],
+					"path": [
+						"api",
+						"v2",
+						"agreements",
+						"enduser",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Build a Link",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.collectionVariables.set(\"requisition_id\", '\"' + jsonData.id + '\"');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"redirect\": \"http://www.yourwebpage.com\",\n       \"institution_id\": {{institution_id}},\n       \"reference\": \"ref-7\",\n       \"agreement\": {{eua_id}},\n       \"user_language\":\"EN\" }"
+				},
+				"url": {
+					"raw": "https://ob.nordigen.com/api/v2/requisitions/",
+					"protocol": "https",
+					"host": [
+						"ob",
+						"nordigen",
+						"com"
+					],
+					"path": [
+						"api",
+						"v2",
+						"requisitions",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get account list",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"url": {
+					"raw": "https://ob.nordigen.com/api/v2/requisitions/{{requisition_id}}/",
+					"protocol": "https",
+					"host": [
+						"ob",
+						"nordigen",
+						"com"
+					],
+					"path": [
+						"api",
+						"v2",
+						"requisitions",
+						"{{requisition_id}}",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get balances",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"url": {
+					"raw": "https://ob.nordigen.com/api/v2/accounts/{{account_id}}/balances/",
+					"protocol": "https",
+					"host": [
+						"ob",
+						"nordigen",
+						"com"
+					],
+					"path": [
+						"api",
+						"v2",
+						"accounts",
+						"{{account_id}}",
+						"balances",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get transactions",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"url": {
+					"raw": "https://ob.nordigen.com/api/v2/accounts/{{account_id}}/transactions/",
+					"protocol": "https",
+					"host": [
+						"ob",
+						"nordigen",
+						"com"
+					],
+					"path": [
+						"api",
+						"v2",
+						"accounts",
+						"{{account_id}}",
+						"transactions",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "institution_id",
+			"value": "\"SWEDBANK_HABALV22\"",
+			"type": "string"
+		},
+		{
+			"key": "requisition_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "account_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "eua_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
