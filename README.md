@@ -1,4 +1,4 @@
-# Integration with Nordigen API
-Easily access bank data using Open Banking.
+# Integration with GoCardless API
+Easily access bank account data using Open Banking. Payment services also included in the GoCardless API, but are out of the scope of this repository.
 
-Created following Nordigen tutorial: https://nordigen.com/en/account_information_documenation/integration/quickstart_guide/
+Collection created by following GoCardless Bank Account Data [tutorial](https://developer.gocardless.com/bank-account-data/quick-start-guide)

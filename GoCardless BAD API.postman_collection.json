@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "23f98682-1660-4751-a0f2-f3209157cbab",
-		"name": "Nordigen API",
+		"_postman_id": "272886bc-353a-40e7-a95e-c707cd0c23d3",
+		"name": "GoCardless BAD API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "26351927"
+		"_exporter_id": "20090297"
 	},
 	"item": [
 		{
@@ -16,7 +16,8 @@
 							"var jsonData = JSON.parse(responseBody);",
 							"pm.collectionVariables.set(\"access_token\", jsonData.access);"
 						],
-						"type": "text/javascript"
+						"type": "text/javascript",
+						"packages": {}
 					}
 				}
 			],
@@ -34,19 +35,14 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"secret_id\":\"Get it here https://ob.nordigen.com/user-secrets/\", \"secret_key\":\"Get it here https://ob.nordigen.com/user-secrets/\"}"
+					"raw": "{\"secret_id\":\"{{secret_id}}\", \"secret_key\":\"{{secret_key}}\"}"
 				},
 				"url": {
-					"raw": "https://ob.nordigen.com/api/v2/token/new/",
-					"protocol": "https",
+					"raw": "{{base_url}}/token/new/",
 					"host": [
-						"ob",
-						"nordigen",
-						"com"
+						"{{base_url}}"
 					],
 					"path": [
-						"api",
-						"v2",
 						"token",
 						"new",
 						""
@@ -64,7 +60,8 @@
 						"exec": [
 							""
 						],
-						"type": "text/javascript"
+						"type": "text/javascript",
+						"packages": {}
 					}
 				}
 			],
@@ -81,16 +78,11 @@
 					}
 				],
 				"url": {
-					"raw": "https://ob.nordigen.com/api/v2/institutions/?country=lv",
-					"protocol": "https",
+					"raw": "{{base_url}}/institutions/?country=lv",
 					"host": [
-						"ob",
-						"nordigen",
-						"com"
+						"{{base_url}}"
 					],
 					"path": [
-						"api",
-						"v2",
 						"institutions",
 						""
 					],
@@ -105,7 +97,7 @@
 			"response": []
 		},
 		{
-			"name": "Create an end user agreement",
+			"name": "Create End User Agreement",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -113,7 +105,8 @@
 						"exec": [
 							""
 						],
-						"type": "text/javascript"
+						"type": "text/javascript",
+						"packages": {}
 					}
 				},
 				{
@@ -123,7 +116,8 @@
 							"var jsonData = JSON.parse(responseBody);",
 							"pm.collectionVariables.set(\"eua_id\", '\"' + jsonData.id + '\"');"
 						],
-						"type": "text/javascript"
+						"type": "text/javascript",
+						"packages": {}
 					}
 				}
 			],
@@ -148,16 +142,11 @@
 					"raw": "{\"institution_id\": {{institution_id}},\n       \"max_historical_days\": \"730\",\n       \"access_valid_for_days\": \"30\",\n       \"access_scope\": [\"balances\", \"details\", \"transactions\"] }"
 				},
 				"url": {
-					"raw": "https://ob.nordigen.com/api/v2/agreements/enduser/",
-					"protocol": "https",
+					"raw": "{{base_url}}/agreements/enduser/",
 					"host": [
-						"ob",
-						"nordigen",
-						"com"
+						"{{base_url}}"
 					],
 					"path": [
-						"api",
-						"v2",
 						"agreements",
 						"enduser",
 						""
@@ -176,7 +165,8 @@
 							"var jsonData = JSON.parse(responseBody);",
 							"pm.collectionVariables.set(\"requisition_id\", '\"' + jsonData.id + '\"');"
 						],
-						"type": "text/javascript"
+						"type": "text/javascript",
+						"packages": {}
 					}
 				}
 			],
@@ -198,19 +188,14 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"redirect\": \"http://www.yourwebpage.com\",\n       \"institution_id\": {{institution_id}},\n       \"reference\": \"ref-7\",\n       \"agreement\": {{eua_id}},\n       \"user_language\":\"EN\" }"
+					"raw": "{\"redirect\": \"http://www.yourwebpage.com\",\n       \"institution_id\": {{institution_id}},\n       \"reference\": \"{{$randomUUID}}\",\n       \"agreement\": {{eua_id}},\n       \"user_language\":\"EN\" }"
 				},
 				"url": {
-					"raw": "https://ob.nordigen.com/api/v2/requisitions/",
-					"protocol": "https",
+					"raw": "{{base_url}}/requisitions/",
 					"host": [
-						"ob",
-						"nordigen",
-						"com"
+						"{{base_url}}"
 					],
 					"path": [
-						"api",
-						"v2",
 						"requisitions",
 						""
 					]
@@ -219,7 +204,57 @@
 			"response": []
 		},
 		{
-			"name": "Get account list",
+			"name": "All Requisitions",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/requisitions/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"requisitions",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Account List",
 			"request": {
 				"method": "GET",
 				"header": [
@@ -252,7 +287,7 @@
 			"response": []
 		},
 		{
-			"name": "Get balances",
+			"name": "Balances",
 			"request": {
 				"method": "GET",
 				"header": [
@@ -286,7 +321,41 @@
 			"response": []
 		},
 		{
-			"name": "Get transactions",
+			"name": "Details",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"url": {
+					"raw": "https://ob.nordigen.com/api/v2/accounts/{{account_id}}/details/",
+					"protocol": "https",
+					"host": [
+						"ob",
+						"nordigen",
+						"com"
+					],
+					"path": [
+						"api",
+						"v2",
+						"accounts",
+						"{{account_id}}",
+						"details",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Transactions",
 			"request": {
 				"method": "GET",
 				"header": [
@@ -364,6 +433,11 @@
 		{
 			"key": "eua_id",
 			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "base_url",
+			"value": "https://bankaccountdata.gocardless.com/api/v2",
 			"type": "string"
 		}
 	]
